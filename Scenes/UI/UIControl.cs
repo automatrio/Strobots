@@ -10,22 +10,30 @@ public class UIControl : Control
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        Input.SetMouseMode(Input.MouseMode.Captured);
+        // Input.SetMouseMode(Input.MouseMode.Captured);
     }
 
     public override void _Input(InputEvent @event)
     {
-        if(Input.IsActionJustPressed("map") && Globals.CurrentMode != GameMode.MapMode)
+        if(Globals.CurrentMode == GameMode.MapMode)
         {
-            Globals.CurrentMode = GameMode.MapMode;
-            Input.SetMouseMode(Input.MouseMode.Visible);
-            this.Visible = true;
+            if(Input.IsActionJustPressed("map"))
+            {
+                Globals.CurrentMode = GameMode.PlayMode;
+                Input.SetMouseMode(Input.MouseMode.Captured);
+                this.Visible = false;
+            }
         }
-        else if(Input.IsActionJustPressed("map") && Globals.CurrentMode == GameMode.MapMode)
+        else
         {
-            Globals.CurrentMode = GameMode.PlayMode;
-            Input.SetMouseMode(Input.MouseMode.Captured);
-            this.Visible = false;
+            if(Input.IsActionJustPressed("map"))
+            {
+                Globals.CurrentMode = GameMode.MapMode;
+                Input.SetMouseMode(Input.MouseMode.Visible);
+                this.Visible = true;
+            }
         }
     }
 }
+
+

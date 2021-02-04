@@ -22,10 +22,13 @@ public abstract class Actor : KinematicBody
 
     public override void _Input(InputEvent @event)
     {
-        if(@event is InputEventMouseMotion eventMouseMotion)
+        if(Globals.CurrentPlayerEntity == this && Globals.CurrentMode == GameMode.PlayMode)
         {
-            this.RotateY(-eventMouseMotion.Relative.x * mouseSensitivity);
-            pivot.RotateX(-eventMouseMotion.Relative.y * mouseSensitivity);
+            if(@event is InputEventMouseMotion eventMouseMotion)
+            {
+                this.RotateY(-eventMouseMotion.Relative.x * mouseSensitivity);
+                pivot.RotateX(-eventMouseMotion.Relative.y * mouseSensitivity);
+            }
         }
     }
 

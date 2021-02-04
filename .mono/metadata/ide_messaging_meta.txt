@@ -1,2 +1,2 @@
-﻿39615
+﻿38219
 /home/automatrio/Desktop/Godot/Godot_v3.2.3-stable_mono_x11.64
