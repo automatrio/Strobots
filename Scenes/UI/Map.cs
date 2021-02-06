@@ -3,14 +3,14 @@ using System;
 
 public class Map : ViewportContainer
 {
-    [Export] public NodePath selectionAreaPath;
-    private SelectionArea selectionArea;
+    [Export] public NodePath MapControllerPath;
+    private MapController mapController;
     private bool isHighlighting;
     private float highlight_transition = 0.0f;
     public override void _Ready()
     {
-        selectionArea = GetNode<SelectionArea>(selectionAreaPath);
-        selectionArea.MapHoveredByMouse += HighlightMapShader;
+        mapController = GetNode<MapController>(MapControllerPath);
+        mapController.MapHoveredByMouse += HighlightMapShader;
     }
 
     public override void _Process(float delta)
@@ -32,7 +32,6 @@ public class Map : ViewportContainer
 
     public void HighlightMapShader(object sender, EventArgs e)
     {
-        GD.Print("HighlightMapShader called.");
         isHighlighting = !isHighlighting;
     }
 
