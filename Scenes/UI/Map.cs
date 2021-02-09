@@ -3,14 +3,14 @@ using System;
 
 public class Map : ViewportContainer
 {
-    [Export] public NodePath MapControllerPath;
-    private MapController mapController;
     private bool isHighlighting;
     private float highlight_transition = 0.0f;
+    public float CameraSize { get; set; }
     public override void _Ready()
     {
-        mapController = GetNode<MapController>(MapControllerPath);
-        mapController.MapHoveredByMouse += HighlightMapShader;
+        GD.Print("Map");
+        CameraSize = GetNode<Camera>("Viewport/Camera").Size;
+        Globals.MapToWorldRatio = RectSize / CameraSize;
     }
 
     public override void _Process(float delta)
@@ -30,9 +30,14 @@ public class Map : ViewportContainer
         } 
     }
 
-    public void HighlightMapShader(object sender, EventArgs e)
+    // Godot signals
+    public void _on_MapArea_mouse_entered()
     {
-        isHighlighting = !isHighlighting;
+        isHighlighting = true;
     }
 
+    public void _on_MapArea_mouse_exited()
+    {
+        isHighlighting = false;
+    }
 }

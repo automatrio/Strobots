@@ -31,7 +31,7 @@ public class Run : State
     {
         if(owner.IsGrounded())
         {
-            if(move.getDirection() == Vector3.Zero)
+            if(move.GetDirection() == Vector3.Zero)
             {
                 stateMachine.TransitionToState("Move/Idle");
             }
@@ -39,7 +39,7 @@ public class Run : State
         }
         else
         {
-            Dictionary<string, object> msg = new Dictionary<string, object>();
+            var msg = new Dictionary<string, object>();
             msg.Add("Velocity", move.Velocity);
             stateMachine.TransitionToState("Move/Air", msg);
         }

@@ -8,6 +8,9 @@ public class Family : Node
     public List<Robot> CurrentPlayerRobots = new List<Robot>();
     public override void _Ready()
     {
+        GD.Print("Family");
+
+        // temporary instantiation of robots, will be replaced
         for (int i = 0; i < 3; i++)
         {
             var newRobot = robot.Instance();
@@ -18,6 +21,8 @@ public class Family : Node
             (newRobot as Robot).Translation = new Vector3((float)rand.NextDouble() * 100, 5, (float)rand.NextDouble() * 100);
             CurrentPlayerRobots.Add(newRobot as Robot);
         }
+
+        Globals.Family = this;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,10 +1,38 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Resources/Internal/Shaders/Outline.shader" type="Shader" id=1]
 [ext_resource path="res://Scenes/UI/Icons/RobotIcon.cs" type="Script" id=2]
 
-[sub_resource type="ShaderMaterial" id=5]
-shader = ExtResource( 1 )
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform bool outline;
+uniform float thickness : hint_range(0, 5) = 10.0;
+uniform vec4 line_color : hint_color = vec4(1.0);
+
+void fragment() {
+	
+	if (outline)
+	{
+		vec2 size = TEXTURE_PIXEL_SIZE * thickness;
+		
+		float offset = texture(TEXTURE, UV + vec2(size.x,0.0)).a;
+		offset += texture(TEXTURE, UV - vec2(size.x,0)).a;
+		offset += texture(TEXTURE, UV + vec2(0, size.y)).a;
+		offset += texture(TEXTURE, UV + vec2(0, -size.y)).a;
+
+		offset = min(offset, 1.0);
+		
+		vec4 color = texture(TEXTURE, UV);
+		COLOR = mix(color, line_color, offset - color.a);
+	}
+	else
+	{
+		COLOR = texture(TEXTURE, UV);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
 shader_param/outline = false
 shader_param/thickness = 5.0
 shader_param/line_color = Color( 1, 1, 1, 1 )
@@ -18,26 +46,30 @@ data = {
 "width": 150
 }
 
-[sub_resource type="ImageTexture" id=3]
+[sub_resource type="ImageTexture" id=4]
 flags = 5
 lossy_quality = 1.0
 flags = 5
 image = SubResource( 6 )
 size = Vector2( 150, 250 )
 
-[sub_resource type="CircleShape2D" id=4]
-radius = 8.0024
+[sub_resource type="CircleShape2D" id=5]
+radius = 10.6
 
 [node name="RobotIcon" type="KinematicBody2D"]
+collision_layer = 0
+collision_mask = 0
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
-material = SubResource( 5 )
-scale = Vector2( 0.14097, 0.14097 )
-texture = SubResource( 3 )
+material = SubResource( 2 )
+scale = Vector2( 0.236294, 0.236294 )
+texture = SubResource( 4 )
 offset = Vector2( 0, -100 )
+region_enabled = true
+region_rect = Rect2( 12.5, -2.5, 125, 255 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -13.8593 )
-scale = Vector2( 1, 2.262 )
-shape = SubResource( 4 )
+position = Vector2( 0, -23.9973 )
+scale = Vector2( 1.29148, 2.92133 )
+shape = SubResource( 5 )

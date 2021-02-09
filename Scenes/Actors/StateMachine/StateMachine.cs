@@ -4,32 +4,40 @@ using System;
 
 public class StateMachine : Node
 {
+    // exports
     [Export] NodePath InitialState;
-    [Export] NodePath DebugControlPath;
-    private DebugControl _debugControl;
+    
+    // fields
+    private State _currentState;
+
+    // properties
     public State CurrentState
     {
         set
         {
             _currentState = value;
-            _stateName = CurrentState.Name;
+            if(Globals.CurrentPlayerEntity == Owner)
+            {
+                Globals.CurrentState = _currentState;
+            }
         }
         get => _currentState;
     }
-    private State _currentState;
-    private string _stateName; 
+    public string StateName { get => _currentState.Name; }
+    
+
     public StateMachine()
     {
         AddToGroup("StateMachine");
     }
-    // Called when the node enters the scene tree for the first time.
-    public async override void _Ready()
+
+    public override void _Ready()
     {
+        GD.Print("StateMachine");
+        // initial setup
         CurrentState = GetNode<State>(InitialState);
-        await ToSignal(Owner, "ready");
         CurrentState.EnterState(null);
 
-        _debugControl = GetNode<DebugControl>(DebugControlPath);
     }
     public override void _Input(InputEvent @event)
     {
@@ -55,11 +63,10 @@ public class StateMachine : Node
             CurrentState.ExitState();
             CurrentState = targetState;
             CurrentState.EnterState(message);
-            _debugControl.DisplayCurrentState(_stateName);
         }
         else
         {
-            _debugControl.DisplayExceptionMessage("Couldn't transition to specified state.");
+            TransitionToState(InitialState);
         }
     }
 }

@@ -4,20 +4,25 @@ using System;
 
 public class Move : State
 {
-    [Export] public float speed = 1000.0f;
-    [Export] public float jumpImpulse = 900.0f;
-    [Export] public float gravity = 5.0f;
+    // exports
+    [Export] public float Speed = 1000.0f;
+    [Export] public float JumpImpulse = 900.0f;
+    [Export] public float Gravity = 5.0f;
 
-
-    public Vector3 Direction { get => _direction; set => _direction = value; }
+    // fields
     private Vector3 _direction;
-    public Vector3 Velocity { get => _velocity; set => _velocity = value; }
     private Vector3 _velocity;
-    private Actor owner;
+    private Actor _owner;
+    private Vector3 _oldVelocity;
+
+    // properties
+    public Vector3 Direction { get => _direction; set => _direction = value; }
+    public Vector3 Velocity { get => _velocity; set => _velocity = value; }
+    public Vector3 OldVelocity { get => _oldVelocity; set => _oldVelocity = value; }
 
     public override void _Ready()
     {
-        owner = (Actor)Owner;
+        _owner = (Actor)Owner;
     }
 
     public override void EnterState(Dictionary<string, object> msg)
@@ -32,34 +37,36 @@ public class Move : State
 
     public override void LocalInput(InputEvent @event)
     {
-        if (owner.IsGrounded())
+        if(Globals.CurrentPlayerEntity == Owner)
         {
-            _direction = getDirection();
+            GD.Print("I am the player");
+            if (_owner.IsGrounded())
+            {
+                _direction = GetDirection();
+            }
         }
     }
 
     public override void PhysicsProcess(float delta)
     {
-        _velocity = calculateVelocity(_direction, speed, delta);
-        owner.MoveAndSlide(_velocity, Vector3.Up);
+        
+        _velocity = calculateVelocity(Vector3.Zero, _direction, Speed, delta);
+        _owner.MoveAndSlide(_velocity, Vector3.Up);
     }
 
     public Vector3 calculateVelocity(
+        Vector3 oldVelocity,
         Vector3 direction,
         float speed,
         float delta
     )
     {
-        // Somehow introduce the old _velocity;
-        
-        var _velocity = new Vector3();
-
+        var _velocity = oldVelocity;
         _velocity = direction * speed * delta;
-
         return _velocity;
     }
 
-    public Vector3 getDirection()
+    public Vector3 GetDirection()
     {
         var inputDirection = new Vector3(
             Input.GetActionStrength("move_right") - Input.GetActionStrength("move_left"),
@@ -67,8 +74,8 @@ public class Move : State
             Input.GetActionStrength("move_forward") - Input.GetActionStrength("move_backward")
         );
 
-        var finalDirection = -owner.GlobalTransform.basis.z * inputDirection.z;
-        finalDirection += owner.GlobalTransform.basis.x * inputDirection.x;
+        var finalDirection = -_owner.GlobalTransform.basis.z * inputDirection.z;
+        finalDirection += _owner.GlobalTransform.basis.x * inputDirection.x;
         finalDirection = finalDirection.Normalized();
 
         return finalDirection;

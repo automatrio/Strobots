@@ -37,12 +37,12 @@ public class Air : State
     {
         if(!owner.IsGrounded())
         {
-            move.Direction += Vector3.Down * move.gravity * delta;
+            move.Direction += Vector3.Down * move.Gravity * delta;
             move.PhysicsProcess(delta);
         }
         else
         {
-            if(move.getDirection() == Vector3.Zero)
+            if(move.GetDirection() == Vector3.Zero)
             {
                 stateMachine.TransitionToState("Move/Idle");
             }

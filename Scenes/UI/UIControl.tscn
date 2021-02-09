@@ -1,14 +1,11 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://Scenes/UI/MapController.cs" type="Script" id=1]
 [ext_resource path="res://icon.png" type="Texture" id=2]
 [ext_resource path="res://Resources/UIRes/Fonts/digital-7.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Resources/Internal/Shaders/Scanlines.shader" type="Shader" id=4]
 [ext_resource path="res://Scenes/UI/View.tscn" type="PackedScene" id=5]
-[ext_resource path="res://Scenes/UI/Icons/PlayerIcon.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Scenes/UI/UIControl.cs" type="Script" id=7]
 [ext_resource path="res://Scenes/UI/Map.cs" type="Script" id=9]
-[ext_resource path="res://Scenes/UI/IconControl.cs" type="Script" id=10]
 
 [sub_resource type="ShaderMaterial" id=1]
 shader = ExtResource( 4 )
@@ -43,14 +40,14 @@ shader_param/mouse_position = Vector2( 0, 0 )
 shader_param/highlight_radius = 1.0
 shader_param/highlight_intensity = 0.0
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 228.697, 10.2934 )
+
+[sub_resource type="DynamicFont" id=5]
 size = 18
 outline_color = Color( 1, 0, 0, 1 )
 extra_spacing_bottom = 5
 font_data = ExtResource( 3 )
-
-[sub_resource type="RectangleShape2D" id=5]
-extents = Vector2( 228.697, 10.2934 )
 
 [node name="UIControl" type="Control"]
 mouse_filter = 2
@@ -137,7 +134,19 @@ mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 9 )
-MapControllerPath = NodePath("../../../../MapController/MapArea")
+
+[node name="MapArea" type="Area2D" parent="PanelContainer/HBoxContainer/MapContainer/Map"]
+position = Vector2( 244.634, 241.379 )
+rotation = 3.14159
+scale = Vector2( 1.029, -23.302 )
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PanelContainer/HBoxContainer/MapContainer/Map/MapArea"]
+position = Vector2( 1.54831, 0.0675058 )
+scale = Vector2( 1.03312, 1.01328 )
+z_index = 2
+z_as_relative = false
+shape = SubResource( 4 )
 
 [node name="Viewport" type="Viewport" parent="PanelContainer/HBoxContainer/MapContainer/Map"]
 size = Vector2( 486, 486 )
@@ -149,6 +158,11 @@ transform = Transform( 1, 0, 0, 0, -1.62921e-07, 1, 0, -1, -1.62921e-07, 0, 260.
 projection = 1
 size = 325.0
 far = 600.0
+
+[node name="Viewport2" type="Viewport" parent="PanelContainer/HBoxContainer/MapContainer/Map"]
+size = Vector2( 486, 486 )
+handle_input_locally = false
+render_target_update_mode = 3
 
 [node name="InfoContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
 margin_left = 672.0
@@ -170,7 +184,7 @@ margin_bottom = 275.0
 [node name="GadgetsLabel" type="Label" parent="PanelContainer/HBoxContainer/InfoContainer/GadgetContainer/VBoxContainer"]
 margin_right = 223.0
 margin_bottom = 16.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 5 )
 text = "Gadgets"
 align = 1
 
@@ -214,7 +228,7 @@ custom_constants/separation = 11
 [node name="StatusLabel" type="Label" parent="PanelContainer/HBoxContainer/InfoContainer/StatusContainer/VBoxContainer"]
 margin_right = 223.0
 margin_bottom = 16.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 5 )
 text = "StatUS"
 align = 1
 
@@ -328,28 +342,5 @@ margin_bottom = 116.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Quit"
-
-[node name="MapController" type="Node" parent="."]
-
-[node name="IconControl" type="Node2D" parent="MapController"]
-position = Vector2( 470.206, 301.397 )
-script = ExtResource( 10 )
-
-[node name="PlayerIcon" parent="MapController/IconControl" instance=ExtResource( 6 )]
-
-[node name="MapArea" type="Area2D" parent="MapController"]
-position = Vector2( 471.634, 300.379 )
-rotation = 3.14159
-scale = Vector2( 1.029, -23.302 )
-collision_mask = 0
-script = ExtResource( 1 )
-IconControlPath = NodePath("../IconControl")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MapController/MapArea"]
-position = Vector2( 1.54831, 0.0675058 )
-scale = Vector2( 1.03312, 1.01328 )
-z_index = 2
-z_as_relative = false
-shape = SubResource( 5 )
-[connection signal="mouse_entered" from="MapController/MapArea" to="MapController/MapArea" method="_on_SelectionArea_mouse_entered"]
-[connection signal="mouse_exited" from="MapController/MapArea" to="MapController/MapArea" method="_on_SelectionArea_mouse_exited"]
+[connection signal="mouse_entered" from="PanelContainer/HBoxContainer/MapContainer/Map/MapArea" to="PanelContainer/HBoxContainer/MapContainer/Map" method="_on_MapArea_mouse_entered"]
+[connection signal="mouse_exited" from="PanelContainer/HBoxContainer/MapContainer/Map/MapArea" to="PanelContainer/HBoxContainer/MapContainer/Map" method="_on_MapArea_mouse_exited"]

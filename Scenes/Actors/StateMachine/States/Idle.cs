@@ -33,7 +33,7 @@ public class Idle : State
         
         if(owner.IsGrounded())
         {
-            if (moveState.getDirection() != Vector3.Zero)
+            if (moveState.GetDirection() != Vector3.Zero)
             {
                 stateMachine.TransitionToState("Move/Run");
             }

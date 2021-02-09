@@ -1,6 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Scenes/Actors/Robot/Robot.cs" type="Script" id=1]
+[ext_resource path="res://Scenes/Actors/StateMachine/States/Run.cs" type="Script" id=2]
+[ext_resource path="res://Scenes/Actors/StateMachine/States/Air.cs" type="Script" id=3]
+[ext_resource path="res://Scenes/Actors/StateMachine/StateMachine.cs" type="Script" id=4]
+[ext_resource path="res://Scenes/Actors/StateMachine/States/Idle.cs" type="Script" id=5]
+[ext_resource path="res://Scenes/Actors/StateMachine/States/Move.cs" type="Script" id=6]
 
 [sub_resource type="ArrayMesh" id=1]
 resource_name = "Cylinder"
@@ -26,6 +31,7 @@ extents = Vector3( 1, 4.80582, 1 )
 
 [node name="Robot" type="KinematicBody"]
 script = ExtResource( 1 )
+StateMachinePath = NodePath("StateMachine")
 
 [node name="BodyMesh" type="MeshInstance" parent="."]
 transform = Transform( -0.1, 0, -8.74228e-09, 0, 0.1, 0, 8.74228e-09, 0, -0.1, 7.93944e-09, 4.807, 0.181633 )
@@ -38,9 +44,26 @@ shape = SubResource( 3 )
 
 [node name="GroundingRay" type="RayCast" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.608, 0 )
+enabled = true
 cast_to = Vector3( 0, -6, 0 )
 
 [node name="Pivot" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9.17657, -0.404839 )
 
 [node name="Camera" type="Camera" parent="Pivot"]
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource( 4 )
+InitialState = NodePath("Move/Idle")
+
+[node name="Move" type="Node" parent="StateMachine"]
+script = ExtResource( 6 )
+
+[node name="Idle" type="Node" parent="StateMachine/Move"]
+script = ExtResource( 5 )
+
+[node name="Run" type="Node" parent="StateMachine/Move"]
+script = ExtResource( 2 )
+
+[node name="Air" type="Node" parent="StateMachine/Move"]
+script = ExtResource( 3 )
