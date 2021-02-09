@@ -12,6 +12,15 @@ public abstract class Actor : KinematicBody
     // constants
     private Vector3 FLOOR_NORMAL {get;} = Vector3.Up;
 
+    // properties
+    public bool[] IsGrounded
+    {
+        get
+        {
+            return new bool[2] {groundingRay.IsColliding(), IsOnFloor()};
+        }
+    }
+
     // children
     private StateMachine stateMachine;
     private RayCast groundingRay;
@@ -53,16 +62,6 @@ public abstract class Actor : KinematicBody
         {
             RotateAlongAxis(Vector3.Up, delta);
         }
-    }
-
-    public bool IsGrounded()
-    {
-        // Returns
-        if(groundingRay.IsColliding() || IsOnFloor())
-        {
-            return true;
-        }
-        return false;
     }
     private void RotateAlongAxis(Vector3 axis, float delta)
     {

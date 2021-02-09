@@ -31,7 +31,7 @@ public class Idle : State
     {
         var moveState = GetParent<Move>();
         
-        if(owner.IsGrounded())
+        if(owner.IsOnFloor())
         {
             if (moveState.GetDirection() != Vector3.Zero)
             {

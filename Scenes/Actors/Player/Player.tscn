@@ -16,6 +16,7 @@ rings = 4
 albedo_color = Color( 0.101961, 0.419608, 0.921569, 1 )
 
 [sub_resource type="CapsuleShape" id=3]
+margin = 2.0
 height = 2.0
 
 [node name="Player" type="KinematicBody"]

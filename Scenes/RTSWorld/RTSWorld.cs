@@ -15,20 +15,19 @@ public class RTSWorld : Node2D
     private Vector2 clickPosition;
     private bool isSelecting;
 
-    public EventHandler<SelectionEventArgs> SelectionStatus;
-
-    private List<Node> _currentSelection;
-    public List<Node> CurrentSelection { get => _currentSelection; private set => _currentSelection = value; }
-
     private PackedScene robotIcon = ResourceLoader.Load<PackedScene>("res://Scenes/UI/Icons/RobotIcon.tscn");
     private PackedScene playerIcon = ResourceLoader.Load<PackedScene>("res://Scenes/UI/Icons/PlayerIcon.tscn");
+    // public List<Node> CurrentSelection { get; set; }
+
+    public RTSWorld()
+    {
+        Globals.FamilyCreated += GenerateIcons;
+    }
 
     public override void _Ready()
     {
+        
         GD.Print("RTSWorld");
-
-        Globals.FamilyCreated += GenerateIcons;
-
     }
 
     public override void _Input(InputEvent @event)
@@ -45,7 +44,6 @@ public class RTSWorld : Node2D
             {
                 _selectionRectangle.Position = clickPosition;
                 _selectionRectangle.End = GetLocalMousePosition();
-                SetPhysicsProcessInternal(true);
                 Update();
             }
         }
@@ -53,14 +51,16 @@ public class RTSWorld : Node2D
         {
             _selectionRectangle = new Rect2();
             isSelecting = false;
-            SetPhysicsProcessInternal(false);
             Update();
         }
     }
 
     public override void _PhysicsProcess(float delta)
     {
-        _currentSelection = TestForCollisions(_selectionRectangle);
+        if(isSelecting)
+        {
+            Globals.CurrentSelection = TestForCollisions(_selectionRectangle);
+        }
     }
 
     public override void _Draw()
@@ -76,14 +76,14 @@ public class RTSWorld : Node2D
         var rectShape = new RectangleShape2D();
         rectShape.Extents = rectangle.Size * 0.5f;
         queryParameters.SetShape(rectShape);
-        queryParameters.Transform = new Transform2D(0, rectangle.Position + (rectangle.Size * 0.5f));
+        queryParameters.Transform = new Transform2D(0, rectangle.Position + (rectangle.Size * 0.5f) + Position);
 
         var collisionResults = GetWorld2d().DirectSpaceState.IntersectShape(queryParameters);
 
         foreach (Dictionary result in collisionResults)
         {
             colliders.Add(result["collider"] as Node);
-            SelectionStatus?.Invoke(this, new SelectionEventArgs() { Command = IconCommand.WithinSelection });
+            GD.Print((result["collider"] as Node).Name);
         }
 
         return colliders;
@@ -98,6 +98,7 @@ public class RTSWorld : Node2D
             (newIcon as Icon).Master = child as Actor;
             (newIcon as Icon).MapToWorldRatio = Globals.MapToWorldRatio;
             (newIcon as Icon).CanFollow = true;
+            (newIcon as Icon).Transform = new Transform2D(0, newIcon.GetMasterCurrentPosition(child as Actor, Globals.MapToWorldRatio));
         }
     }
 
@@ -105,13 +106,13 @@ public class RTSWorld : Node2D
     {
         if(node.IsInGroup("Robots"))
         {
-            var newIcon = robotIcon.Instance() as Icon;
+            var newIcon = (robotIcon.Instance() as RobotIcon);
             AddChild(newIcon);
             return newIcon as Icon;
         }
         else if(node.IsInGroup("Player"))
         {
-            var newIcon = playerIcon.Instance() as Icon;
+            var newIcon = playerIcon.Instance() as PlayerIcon;
             AddChild(newIcon);
             return newIcon as Icon;
         }
@@ -123,9 +124,4 @@ public class RTSWorld : Node2D
         }
     }
 
-}
-
-public class SelectionEventArgs : EventArgs
-{
-    public IconCommand Command { get; set; }
 }

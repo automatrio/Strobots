@@ -39,8 +39,7 @@ public class Move : State
     {
         if(Globals.CurrentPlayerEntity == Owner)
         {
-            GD.Print("I am the player");
-            if (_owner.IsGrounded())
+            if(_owner.IsOnFloor())
             {
                 _direction = GetDirection();
             }

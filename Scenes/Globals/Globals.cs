@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public static class Globals
 {
@@ -10,6 +11,7 @@ public static class Globals
     private static State _currentState;
     private static Node _debugControl;
     private static Family _family;
+    private static List<Node> _currentSelection;
 
     // properties
     public static Node CurrentPlayerEntity
@@ -48,6 +50,15 @@ public static class Globals
             StateChanged?.Invoke(null, EventArgs.Empty);
         }
     }
+    public static List<Node> CurrentSelection
+    { 
+        get => _currentSelection;
+        set
+        {
+            _currentSelection = value;
+            SelectionStatus?.Invoke(null, new SelectionEventArgs() { Command = IconCommand.WithinSelection });
+        }
+    }
     public static Node DebugControl
     {
         get => _debugControl;
@@ -68,10 +79,16 @@ public static class Globals
     public static event EventHandler<EventArgs> MapToWorldRatioChanged;
     public static event EventHandler<EventArgs> StateChanged;
     public static event EventHandler<EventArgs> FamilyCreated;
+    public static event EventHandler<SelectionEventArgs> SelectionStatus;
 }
 
 public enum GameMode
 {
     MapMode,
     PlayMode
+}
+
+public class SelectionEventArgs : EventArgs
+{
+    public IconCommand Command { get; set; }
 }

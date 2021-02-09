@@ -35,7 +35,7 @@ public class Air : State
 
     public override void PhysicsProcess(float delta)
     {
-        if(!owner.IsGrounded())
+        if(!owner.IsOnFloor())
         {
             move.Direction += Vector3.Down * move.Gravity * delta;
             move.PhysicsProcess(delta);

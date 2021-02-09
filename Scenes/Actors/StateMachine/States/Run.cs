@@ -29,7 +29,7 @@ public class Run : State
 
     public override void PhysicsProcess(float delta)
     {
-        if(owner.IsGrounded())
+        if(owner.IsGrounded[0] || owner.IsGrounded[1])
         {
             if(move.GetDirection() == Vector3.Zero)
             {
