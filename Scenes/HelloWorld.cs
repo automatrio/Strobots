@@ -10,7 +10,7 @@ public class HelloWorld : Spatial
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        GD.Print("World");
+        GD.Print("Hello World!");
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

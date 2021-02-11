@@ -33,7 +33,6 @@ public class StateMachine : Node
 
     public override void _Ready()
     {
-        GD.Print("StateMachine");
         // initial setup
         CurrentState = GetNode<State>(InitialState);
         CurrentState.EnterState(null);

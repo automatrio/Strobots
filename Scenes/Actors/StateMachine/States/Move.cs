@@ -5,7 +5,7 @@ using System;
 public class Move : State
 {
     // exports
-    [Export] public float Speed = 1000.0f;
+    [Export] public float Speed = 800.0f;
     [Export] public float JumpImpulse = 900.0f;
     [Export] public float Gravity = 5.0f;
 
@@ -27,7 +27,7 @@ public class Move : State
 
     public override void EnterState(Dictionary<string, object> msg)
     {
-        return;
+        _oldVelocity = Vector3.Zero;
     }
 
     public override void ExitState()
@@ -39,7 +39,7 @@ public class Move : State
     {
         if(Globals.CurrentPlayerEntity == Owner)
         {
-            if(_owner.IsOnFloor())
+            if(_owner.IsGrounded[0] || _owner.IsGrounded[1])
             {
                 _direction = GetDirection();
             }
@@ -48,21 +48,32 @@ public class Move : State
 
     public override void PhysicsProcess(float delta)
     {
-        
-        _velocity = calculateVelocity(Vector3.Zero, _direction, Speed, delta);
+        _velocity = calculateVelocity(_direction, Speed, delta);
         _owner.MoveAndSlide(_velocity, Vector3.Up);
     }
 
     public Vector3 calculateVelocity(
-        Vector3 oldVelocity,
         Vector3 direction,
         float speed,
         float delta
     )
     {
-        var _velocity = oldVelocity;
-        _velocity = direction * speed * delta;
-        return _velocity;
+        var velocity = new Vector3();
+
+        if(_oldVelocity.Length() <= 0)
+        {    
+            velocity = direction * speed * delta;
+        }
+        else
+        {
+            // velocity = _oldVelocity.LinearInterpolate(direction * speed * delta, .5f);
+            
+            velocity = (direction * speed * delta + _oldVelocity)/2.0f;
+
+            _oldVelocity -= _velocity * delta;
+        }
+
+        return velocity;
     }
 
     public Vector3 GetDirection()

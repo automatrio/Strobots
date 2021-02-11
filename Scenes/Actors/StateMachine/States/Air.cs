@@ -19,7 +19,7 @@ public class Air : State
 
         if(msg.ContainsKey("Velocity"))
         {
-            move.Velocity = (Vector3)msg["Velocity"];
+            move.OldVelocity = (Vector3)msg["Velocity"];
         }
     }
 
@@ -30,7 +30,7 @@ public class Air : State
 
     public override void LocalInput(InputEvent @event)
     {
-        move.LocalInput(@event);
+        return;
     }
 
     public override void PhysicsProcess(float delta)

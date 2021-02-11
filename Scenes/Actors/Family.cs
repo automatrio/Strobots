@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 public class Family : Node
 {
+    // properties
+    public List<Robot> CurrentPlayerRobots { get; set; } = new List<Robot>();
+
+    // resources
     private PackedScene robot = ResourceLoader.Load<PackedScene>("res://Scenes/Actors/Robot/Robot.tscn");
-    public List<Robot> CurrentPlayerRobots = new List<Robot>();
+    
     public override void _Ready()
     {
-        GD.Print("Family");
-
         // temporary instantiation of robots, will be replaced
         for (int i = 0; i < 3; i++)
         {

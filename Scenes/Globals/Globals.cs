@@ -12,6 +12,7 @@ public static class Globals
     private static Node _debugControl;
     private static Family _family;
     private static List<Node> _currentSelection;
+    private static Vector2 _assignedDestination;
 
     // properties
     public static Node CurrentPlayerEntity
@@ -59,6 +60,15 @@ public static class Globals
             SelectionStatus?.Invoke(null, new SelectionEventArgs() { Command = IconCommand.WithinSelection });
         }
     }
+    public static Vector2 AssignedDestination
+    { 
+        get => _assignedDestination;
+        set
+        {
+            _assignedDestination = value;
+            DestinationAssigned?.Invoke(null, new AssignmentEventArgs());
+        }
+    }
     public static Node DebugControl
     {
         get => _debugControl;
@@ -80,6 +90,7 @@ public static class Globals
     public static event EventHandler<EventArgs> StateChanged;
     public static event EventHandler<EventArgs> FamilyCreated;
     public static event EventHandler<SelectionEventArgs> SelectionStatus;
+    public static event EventHandler<AssignmentEventArgs> DestinationAssigned;
 }
 
 public enum GameMode
@@ -91,4 +102,21 @@ public enum GameMode
 public class SelectionEventArgs : EventArgs
 {
     public IconCommand Command { get; set; }
+}
+
+public class AssignmentEventArgs : EventArgs
+{
+    private List<Actor> _iconMasters = new List<Actor>();
+    public List<Actor> IconMasters
+    {
+        get
+        {
+            foreach(Icon icon in Globals.CurrentSelection)
+            {
+                _iconMasters.Add(icon.Master);
+            }
+
+            return _iconMasters;
+        }
+    }
 }

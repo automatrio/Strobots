@@ -22,17 +22,19 @@ public abstract class Actor : KinematicBody
     }
 
     // children
-    private StateMachine stateMachine;
+    protected StateMachine stateMachine;
     private RayCast groundingRay;
     private Spatial pivot;
     private Camera camera;
 
     public override void _Ready()
-    {
+    {            
         stateMachine = GetNode<StateMachine>(StateMachinePath);
         groundingRay = GetNode<RayCast>("GroundingRay");
         pivot = GetNode<Spatial>("Pivot");
         camera = pivot.GetNode<Camera>("Camera");
+
+        Globals.PlayerEntityChosen += ActivateCamera;
     }
 
     public override void _Input(InputEvent @event)
@@ -75,5 +77,13 @@ public abstract class Actor : KinematicBody
                     Mathf.Min(angle, angle * RotationSpeed * delta)
                     );
             }
+    }
+
+    public void ActivateCamera(object sender, EventArgs args)
+    {
+        if(Globals.CurrentPlayerEntity == this)
+        {
+            camera.Current = true;
+        }
     }
 }
