@@ -19,6 +19,10 @@ config/name="Strobots"
 run/main_scene="res://Scenes/World.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+SteamManager="*res://Multiplayer/SteamManager.cs"
+
 [input]
 
 move_forward={

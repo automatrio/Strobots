@@ -72,7 +72,11 @@ public static class Globals
     public static Node DebugControl
     {
         get => _debugControl;
-        set => _debugControl = value;
+        set
+        {
+            _debugControl = value;
+            DebugControlCreated?.Invoke(null, EventArgs.Empty);
+        }
     }
     public static Family Family
     { 
@@ -88,6 +92,7 @@ public static class Globals
     public static event EventHandler<EventArgs> ModeChosen;
     public static event EventHandler<EventArgs> MapToWorldRatioChanged;
     public static event EventHandler<EventArgs> StateChanged;
+    public static event EventHandler<EventArgs> DebugControlCreated;
     public static event EventHandler<EventArgs> FamilyCreated;
     public static event EventHandler<SelectionEventArgs> SelectionStatus;
     public static event EventHandler<AssignmentEventArgs> DestinationAssigned;
