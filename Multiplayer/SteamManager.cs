@@ -52,6 +52,6 @@ public class SteamManager : Node
     public override void _Process(float delta)
     {
         // callbacks
-        SteamAPI.RunCallbacks();
+        SteamAPI.RunCallbacks(); // actually checks for callbacks (events) and execute them
     }
 }

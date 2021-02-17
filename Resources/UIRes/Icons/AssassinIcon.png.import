@@ -1,0 +1,13 @@
+[remap]
+
+importer="image"
+type="Image"
+path="res://.import/AssassinIcon.png-c99ca28c5a7b8d31fc872187fd91845b.image"
+
+[deps]
+
+source_file="res://Resources/UIRes/Icons/AssassinIcon.png"
+dest_files=[ "res://.import/AssassinIcon.png-c99ca28c5a7b8d31fc872187fd91845b.image" ]
+
+[params]
+

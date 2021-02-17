@@ -3,7 +3,7 @@ using System;
 
 public class Typewriter : Highlightable
 {
-    public override void PerformActionWhenClicked()
+    public override void PerformActionWhenClicked(object sender, EventArgs args)
     {
         return;
     }

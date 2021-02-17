@@ -26,10 +26,12 @@ public class Pivot : Spatial
         {
             _canZoomIn = true;
             _currentZoomObject = LobbyGlobals.ObjectHoveredByMouse;
+            LobbyGlobals.CurrentMenuOption = _currentZoomObject;
         }
         else if(Input.IsActionJustPressed("left_click") && LobbyGlobals.ObjectHoveredByMouse == null)
         {
             _canZoomIn = false;
+            LobbyGlobals.CurrentMenuOption = null;
         }
     }
 

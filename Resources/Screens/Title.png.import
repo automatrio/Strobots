@@ -1,0 +1,13 @@
+[remap]
+
+importer="image"
+type="Image"
+path="res://.import/Title.png-dcc69d5c9eaa48b704ec50a4ab901f4b.image"
+
+[deps]
+
+source_file="res://Resources/Screens/Title.png"
+dest_files=[ "res://.import/Title.png-dcc69d5c9eaa48b704ec50a4ab901f4b.image" ]
+
+[params]
+
