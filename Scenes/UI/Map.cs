@@ -50,7 +50,6 @@ public class Map : ViewportContainer
 
     public void CameraRayCast(object sender, AssignmentEventArgs args)
     {
-        // do something with
         Vector3 from = camera.ProjectRayOrigin(Globals.AssignedDestination);
         Vector3 to = from + camera.ProjectRayNormal(Globals.AssignedDestination) * 300.0f;
 

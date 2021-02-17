@@ -19,11 +19,11 @@ public class SteamManager : Node
         // initial sanity check
         if(!Packsize.Test())
         {
-            SteamManagerExceptions.Add("ERROR: [Steamworks.Net] The packsize returned false; the wrong version of Steam is being used on this platform.");
+            SteamManagerExceptions.Add("ERROR: [Steamworks.Net] The packsize returned false; \n the wrong version of Steam is being used on this platform.");
         }
         if(!DllCheck.Test())
         {
-            SteamManagerExceptions.Add("ERROR: [Steamworks.Net] The DllCheck test returned false; one or more of the Steamworks binaries might be not up to date.");
+            SteamManagerExceptions.Add("ERROR: [Steamworks.Net] The DllCheck test returned false; \n one or more of the Steamworks binaries might be not up to date.");
         }
         try
         {
@@ -38,14 +38,20 @@ public class SteamManager : Node
             SteamManagerExceptions.Add("ERROR: [Steamworks.Net] Failed to initalize Steamworks.dll");
             SteamManagerExceptions.Add(ex.Message);
         }
+        // initaliaze steam
         if(SteamAPI.Init())
         {
             SteamManagerExceptions.Add("Steam initialized succesfully!");
-            GD.Print("this happened");
         }
         else
         {
-            SteamManagerExceptions.Add("ERROR: [Steamworks.Net] Failed to initalize Steam. Please make sure the Steam client is open.");
+            SteamManagerExceptions.Add("ERROR: [Steamworks.Net] Failed to initalize Steam. \n Please make sure the Steam client is open.");
         }
+    }
+
+    public override void _Process(float delta)
+    {
+        // callbacks
+        SteamAPI.RunCallbacks();
     }
 }
