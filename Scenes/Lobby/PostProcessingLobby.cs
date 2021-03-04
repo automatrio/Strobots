@@ -9,7 +9,9 @@ public class PostProcessingLobby : CanvasLayer
     public async override void _Ready()
     {
         animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
-        await ToSignal(GetTree().CreateTimer(1.5f), "timeout");
+        await ToSignal(GetTree().CreateTimer(9.5f), "timeout");
+        animationPlayer.Play("FadeInLogo");
+        await ToSignal(GetTree().CreateTimer(14f), "timeout");
         animationPlayer.Play("FadeInTitle");
     }
 

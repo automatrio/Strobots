@@ -9,6 +9,9 @@ public class SteamManager : Node
     // properties
     public ObservableCollection<string> SteamManagerExceptions { get; set; } = new ObservableCollection<string>();
 
+    // signaling
+    public event EventHandler<EventArgs> SteamInitializedSuccesfully;
+
     public override void _Ready()
     {
         Globals.DebugControlCreated += SanityCheck;
@@ -42,6 +45,7 @@ public class SteamManager : Node
         if(SteamAPI.Init())
         {
             SteamManagerExceptions.Add("Steam initialized succesfully!");
+            SteamInitializedSuccesfully?.Invoke(this, EventArgs.Empty);
         }
         else
         {
@@ -53,5 +57,25 @@ public class SteamManager : Node
     {
         // callbacks
         SteamAPI.RunCallbacks(); // actually checks for callbacks (events) and execute them
+    }
+    public Texture GetUserAvatar(CSteamID steamID)
+    {
+        int friendAvatar = SteamFriends.GetLargeFriendAvatar(steamID); // triggers an AvatarImageLoaded_t callback
+        
+        uint imageWidth;
+        uint imageHeight;
+        SteamUtils.GetImageSize(friendAvatar, out imageWidth, out imageHeight);
+
+        byte[] imageArray = new byte[imageWidth * imageHeight * 4]; // a byte array onto which the image is to be stored (4 because rgba)
+        var avatarTexture = new ImageTexture();
+        bool success = SteamUtils.GetImageRGBA(friendAvatar, imageArray, imageArray.Length); // loads the image onto a buffer
+        if (success)
+        {
+            var image = new Image();
+            image.CreateFromData((int)imageWidth, (int)imageHeight, false, Image.Format.Rgba8, imageArray);
+            avatarTexture.CreateFromImage(image);
+        }
+
+        return avatarTexture as Texture;
     }
 }

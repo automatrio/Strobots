@@ -6,10 +6,13 @@ public class HostMonitor : Highlightable
 {
     // fields
     private bool _isHosting = false;
-    private CSteamID lobbyID;
+    private CSteamID _lobbyID;
+    private SteamManager _steamManager;
 
     // children
     private Control hostScreenPanel;
+    private TextureRect profilePicture;
+    private Label status;
 
     // Steam signaling
     protected Callback<LobbyCreated_t> Callback_lobbyCreated;
@@ -20,22 +23,29 @@ public class HostMonitor : Highlightable
         base._Ready();
 
         hostScreenPanel = GetNode<Control>("HostScreen/Viewport/HostScreenPanel");
+        status = GetNode<Label>("HostScreen/Viewport/HostScreenPanel/MarginContainer/HBoxContainer/Status");
+        profilePicture = GetNode<TextureRect>("HostScreen/Viewport/HostScreenPanel/MarginContainer/HBoxContainer/ProfilePicture");
+
+        _steamManager = GetNode<SteamManager>("/root/SteamManager");
 
         // Steam event subscriptions
         Callback_lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
+        _steamManager.SteamInitializedSuccesfully += displayProfilePicture;
     }
-    public override void PerformActionWhenClicked(object sender, EventArgs args)
+    public override void OnHighlightableClicked(object sender, EventArgs args)
     {
         if((sender as Node) == (this as Node))
         {
             if(!_isHosting)
             {
                 LobbyGlobals.ObjectUnderMouseCursor -= Highlight;
+                Reset();
                 CreateNewLobby();
             }
             else
             {
-                DeleteExistingLobby();
+                LobbyGlobals.ObjectUnderMouseCursor += Highlight;
+                LeaveLobby();
             }
         }
     }
@@ -47,11 +57,10 @@ public class HostMonitor : Highlightable
         );
     }
 
-    private void DeleteExistingLobby()
+    private void LeaveLobby()
     {
-        SteamMatchmaking.LeaveLobby(lobbyID);
+        SteamMatchmaking.LeaveLobby(_lobbyID);
         _isHosting = false;
-        Label status = hostScreenPanel.GetNode<Label>("Status");
         status.Text = "Host a \n new game";
     }
 
@@ -61,14 +70,20 @@ public class HostMonitor : Highlightable
 
         if(lobby.m_eResult == EResult.k_EResultOK)
         {
-            status.Text = "Lobby Id: \n" + lobby.m_ulSteamIDLobby + "\n Click here to \n stop hosting"; 
+            status.Text = "Lobby Id: \n" + lobby.m_ulSteamIDLobby + "\n\n Click here to \n stop hosting"; 
             _isHosting = true;
-            lobbyID = (CSteamID)lobby.m_ulSteamIDLobby;
+            _lobbyID = (CSteamID)lobby.m_ulSteamIDLobby;
             MultiplayerGlobals.IsPlayingAsHost = true;
         }
         else
         {
             status.Text = "Error " + lobby.m_eResult;
         }
+    }
+
+    private void displayProfilePicture(object sender, EventArgs args)
+    {
+        status.Text = "Welcome, agent " + SteamFriends.GetPersonaName();
+        profilePicture.Texture = _steamManager.GetUserAvatar(SteamUser.GetSteamID()) as ImageTexture;
     }
 }

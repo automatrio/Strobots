@@ -16,7 +16,7 @@ public abstract class Highlightable : StaticBody
     {
         meshInstance = GetNode<MeshInstance>("MeshInstance");
         LobbyGlobals.ObjectUnderMouseCursor += Highlight;
-        LobbyGlobals.MenuOptionChosen += PerformActionWhenClicked;
+        LobbyGlobals.MenuOptionChosen += OnHighlightableClicked;
     }
 
     public void Highlight(object sender, EventArgs args)
@@ -30,9 +30,14 @@ public abstract class Highlightable : StaticBody
         }
         else
         {
-            meshInstance.GetSurfaceMaterial(0).NextPass = null;
+            Reset();
         }
     }
 
-    public abstract void PerformActionWhenClicked(object sender, EventArgs args);
+    public void Reset()
+    {
+        meshInstance.GetSurfaceMaterial(0).NextPass = null;
+    }
+
+    public abstract void OnHighlightableClicked(object sender, EventArgs args);
 }

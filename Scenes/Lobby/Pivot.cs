@@ -4,12 +4,14 @@ using System;
 public class Pivot : Spatial
 {
     // exports
-    [Export] public float ZoomSpeed = 1.0f;
+    [Export] public float ZoomInSpeed = 6.0f;
+    [Export] public float ZoomOutSpeed = 0.2f;
 
     // fields
     private Transform _originalTransform;
-    private bool _canZoomIn;
+    private MenuCameraStatus _menuCameraStatus = MenuCameraStatus.Origin;
     private Node _currentZoomObject;
+    private float _distance = 0.0f;
     
     // children
     private Camera camera;
@@ -24,14 +26,15 @@ public class Pivot : Spatial
     {
         if(Input.IsActionJustPressed("left_click") && LobbyGlobals.ObjectHoveredByMouse is Node)
         {
-            _canZoomIn = true;
+            _menuCameraStatus = MenuCameraStatus.MoveToTarget;
             _currentZoomObject = LobbyGlobals.ObjectHoveredByMouse;
             LobbyGlobals.CurrentMenuOption = _currentZoomObject;
         }
         else if(Input.IsActionJustPressed("left_click") && LobbyGlobals.ObjectHoveredByMouse == null)
         {
-            _canZoomIn = false;
+            _menuCameraStatus = MenuCameraStatus.MoveToOrigin;
             LobbyGlobals.CurrentMenuOption = null;
+            _distance = GlobalTransform.origin.DistanceTo(_originalTransform.origin);
         }
     }
 
@@ -56,24 +59,40 @@ public class Pivot : Spatial
             LobbyGlobals.ObjectHoveredByMouse = null;
         }
 
-        if(_canZoomIn)
+        if(_menuCameraStatus == MenuCameraStatus.MoveToTarget)
         {
             // Zooms in if the user clicks on a valid object
             var zoomedTransform = _currentZoomObject.GetNode<Spatial>("CameraSlot").GlobalTransform;
             
-            if(GlobalTransform.origin.DistanceTo(zoomedTransform.origin) > 0.5)
+            if(GlobalTransform.origin.DistanceTo(zoomedTransform.origin) > 0.05)
             {
-                Transform = Transform.InterpolateWith(zoomedTransform, ZoomSpeed * delta);
+                GlobalTransform = GlobalTransform.InterpolateWith(zoomedTransform, ZoomInSpeed * delta);
+            }
+        }
+        else if (_menuCameraStatus == MenuCameraStatus.MoveToOrigin)
+        {
+            if(_distance > 0.0f)
+            {
+                float ratio = 1.0f - (GlobalTransform.origin.DistanceTo(_originalTransform.origin) / _distance);
+                GlobalTransform = GlobalTransform.InterpolateWith(_originalTransform, Mathf.Max(0.1f, ratio) * ZoomOutSpeed);
+            }
+            else
+            {
+                _menuCameraStatus = MenuCameraStatus.Origin;
             }
         }
         else
         {
-            // Zooms out if the user clicks outside of a valid object
-            if(GlobalTransform.origin.DistanceTo(_originalTransform.origin) > 0.05)
-            {
-                Transform = Transform.InterpolateWith(_originalTransform, ZoomSpeed * 4.0f * delta);
-            }
+            return;
         }
         
     }
+}
+
+public enum MenuCameraStatus
+{
+    Origin,
+    MoveToTarget,
+    MoveToOrigin
+
 }

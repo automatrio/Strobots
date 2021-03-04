@@ -3,19 +3,19 @@ using System;
 
 public class Lobby3D : Spatial
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
-
-    // Called when the node enters the scene tree for the first time.
+    private PackedScene gameWorld = ResourceLoader.Load<PackedScene>("res://Scenes/World.tscn");
     public override void _Ready()
     {
-        
+        LobbyGlobals.ReadyToPlayToggled += InitializeGame;
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+    public void InitializeGame(object sender, EventArgs args)
+    {
+        GD.Print("Initializing world...");
+        // var newGameWorld = gameWorld.Instance();
+        // GetTree().Root.AddChild(newGameWorld);
+        // this.QueueFree();
+        GetTree().ChangeScene("res://Scenes/World.tscn");
+        this.QueueFree();
+    }
 }

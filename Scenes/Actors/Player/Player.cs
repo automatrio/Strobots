@@ -7,6 +7,7 @@ public class Player : Actor
     {
         AddToGroup("Player");
         Globals.CurrentPlayerEntity = this;
+        GD.Print("I'm ready, says player");
     }
 
     public override void _Ready()

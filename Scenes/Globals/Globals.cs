@@ -21,7 +21,11 @@ public static class Globals
         set
         {
             _currentPlayerEntity = value;
-            PlayerEntityChosen?.Invoke(null, EventArgs.Empty);
+            if(value != null)
+            {
+                PlayerEntityChosen?.Invoke(null, EventArgs.Empty);
+                GD.Print("Current player entity was chosen and it is ", (value as Node).Name);
+            }   
         }
     }
     public static GameMode CurrentMode
