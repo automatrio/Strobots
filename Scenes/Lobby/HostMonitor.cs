@@ -5,8 +5,6 @@ using Steamworks;
 public class HostMonitor : Highlightable
 {
     // fields
-    private bool _isHosting = false;
-    private CSteamID _lobbyID;
     private SteamManager _steamManager;
 
     // children
@@ -36,7 +34,7 @@ public class HostMonitor : Highlightable
     {
         if((sender as Node) == (this as Node))
         {
-            if(!_isHosting)
+            if(!MultiplayerGlobals.IsPlayingAsHost)
             {
                 LobbyGlobals.ObjectUnderMouseCursor -= Highlight;
                 Reset();
@@ -59,21 +57,23 @@ public class HostMonitor : Highlightable
 
     private void LeaveLobby()
     {
-        SteamMatchmaking.LeaveLobby(_lobbyID);
-        _isHosting = false;
+        SteamMatchmaking.LeaveLobby(MultiplayerGlobals.LobbyID);
+        MultiplayerGlobals.IsPlayingAsHost = false;
         status.Text = "Host a \n new game";
     }
 
     private void OnLobbyCreated(LobbyCreated_t lobby)
     {
-        Label status = hostScreenPanel.GetNode<Label>("Status");
-
         if(lobby.m_eResult == EResult.k_EResultOK)
         {
-            status.Text = "Lobby Id: \n" + lobby.m_ulSteamIDLobby + "\n\n Click here to \n stop hosting"; 
-            _isHosting = true;
-            _lobbyID = (CSteamID)lobby.m_ulSteamIDLobby;
+            status.Text = "Lobby Id: \n" + lobby.m_ulSteamIDLobby + "\n\n Click here to \n stop hosting";
+            MultiplayerGlobals.LobbyID = (CSteamID)lobby.m_ulSteamIDLobby;
             MultiplayerGlobals.IsPlayingAsHost = true;
+            MultiplayerGlobals.Player1_ID = SteamUser.GetSteamID();
+
+            // experimental
+            SteamMatchmaking.InviteUserToLobby((CSteamID)lobby.m_ulSteamIDLobby, SteamUser.GetSteamID());
+
         }
         else
         {

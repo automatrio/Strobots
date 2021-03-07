@@ -7,11 +7,17 @@ public class Family : Node
     // properties
     public List<Robot> CurrentPlayerRobots { get; set; } = new List<Robot>();
 
+    // children
+    private KinematicBody player;
+
     // resources
     private PackedScene robot = ResourceLoader.Load<PackedScene>("res://Scenes/Actors/Robot/Robot.tscn");
     
     public override void _Ready()
     {
+        var rand = new Random();
+        player = GetNode<KinematicBody>("Player");
+
         // temporary instantiation of robots, will be replaced
         for (int i = 0; i < 3; i++)
         {
@@ -19,7 +25,7 @@ public class Family : Node
             newRobot.Name = String.Concat("Robot", i + 1);
             AddChild(newRobot);
             // temp:
-            var rand = new Random();
+            
             (newRobot as Robot).Translation = new Vector3((float)rand.NextDouble() * 100, 5, (float)rand.NextDouble() * 100);
             CurrentPlayerRobots.Add(newRobot as Robot);
         }
@@ -27,9 +33,4 @@ public class Family : Node
         Globals.Family = this;
     }
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
 }

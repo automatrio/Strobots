@@ -9,7 +9,7 @@ public static class Globals
     private static GameMode _currentMode = GameMode.PlayMode;
     private static Vector2 _mapToWorldRatio;
     private static State _currentState;
-    private static Node _debugControl;
+    private static DebugControl _debugControl;
     private static Family _family;
     private static List<Node> _currentSelection;
     private static Vector2 _assignedDestination;
@@ -73,7 +73,7 @@ public static class Globals
             DestinationAssigned?.Invoke(null, new AssignmentEventArgs());
         }
     }
-    public static Node DebugControl
+    public static DebugControl DebugControl
     {
         get => _debugControl;
         set

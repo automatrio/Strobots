@@ -7,7 +7,6 @@ public static class LobbyGlobals
     // fields
     private static Node _objectHoveredByMouse;
     private static Node _currentMenuOption;
-    private static bool _isReadyToPlay;
 
     // properties
     public static Node ObjectHoveredByMouse
@@ -29,18 +28,7 @@ public static class LobbyGlobals
         }
     }
 
-    public static bool IsReadyToPlay
-    { 
-        get => _isReadyToPlay;
-        set
-        { 
-            _isReadyToPlay = value;
-            ReadyToPlayToggled?.Invoke(null, EventArgs.Empty);
-        }
-    }
-
     // signaling
     public static event EventHandler ObjectUnderMouseCursor;
     public static event EventHandler MenuOptionChosen;
-    public static event EventHandler ReadyToPlayToggled;
 }

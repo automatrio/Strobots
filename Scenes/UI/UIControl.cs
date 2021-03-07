@@ -22,7 +22,7 @@ public class UIControl : Control
 
     public override void _Ready()
     {
-        // Input.SetMouseMode(Input.MouseMode.Captured);
+        Input.SetMouseMode(Input.MouseMode.Captured);
     }
 
     public override void _Input(InputEvent @event)

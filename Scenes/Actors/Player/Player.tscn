@@ -13,7 +13,7 @@ radial_segments = 12
 rings = 4
 
 [sub_resource type="SpatialMaterial" id=2]
-albedo_color = Color( 0.101961, 0.419608, 0.921569, 1 )
+albedo_color = Color( 0.101961, 0.403922, 0.921569, 1 )
 
 [sub_resource type="CapsuleShape" id=3]
 margin = 2.0

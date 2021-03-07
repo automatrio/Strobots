@@ -58,10 +58,22 @@ public class SteamManager : Node
         // callbacks
         SteamAPI.RunCallbacks(); // actually checks for callbacks (events) and execute them
     }
-    public Texture GetUserAvatar(CSteamID steamID)
+    public Texture GetUserAvatar(CSteamID steamID, string option = "large")
     {
-        int friendAvatar = SteamFriends.GetLargeFriendAvatar(steamID); // triggers an AvatarImageLoaded_t callback
-        
+        int friendAvatar;
+        switch(option)
+        {
+            default:
+                friendAvatar = SteamFriends.GetLargeFriendAvatar(steamID); // triggers an AvatarImageLoaded_t callback
+                break;
+            case("medium"):
+                friendAvatar = SteamFriends.GetMediumFriendAvatar(steamID); // triggers an AvatarImageLoaded_t callback
+                break;
+            case("small"):
+                friendAvatar = SteamFriends.GetSmallFriendAvatar(steamID); // triggers an AvatarImageLoaded_t callback
+                break;
+        }
+             
         uint imageWidth;
         uint imageHeight;
         SteamUtils.GetImageSize(friendAvatar, out imageWidth, out imageHeight);
